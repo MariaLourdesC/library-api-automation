@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Respuesta con mensaje de error o confirmación (clave msg en minúscula)",
+  "type": "object",
+  "properties": {
+    "msg": { "type": "string" }
+  },
+  "required": ["msg"],
+  "additionalProperties": false
+}

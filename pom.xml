@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.library</groupId>
+    <artifactId>library-api-automation</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <restassured.version>5.5.1</restassured.version>
+        <cucumber.version>7.34.8</cucumber.version>
+        <maven.build.timestamp.format>yyyyMMdd-HHmmss-SSS</maven.build.timestamp.format>
+        <run.directory>${project.build.directory}/runs/${maven.build.timestamp}</run.directory>
+        <env>qa</env>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${restassured.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${restassured.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-picocontainer</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>3.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.4</version>
+                <configuration>
+                    <reportsDirectory>${run.directory}/surefire</reportsDirectory>
+                    <systemPropertyVariables>
+                        <env>${env}</env>
+                        <run.directory>${run.directory}</run.directory>
+                        <cucumber.plugin>pretty,html:${run.directory}/cucumber.html,json:${run.directory}/cucumber.json,junit:${run.directory}/cucumber.xml</cucumber.plugin>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>net.masterthought</groupId>
+                <artifactId>maven-cucumber-reporting</artifactId>
+                <!-- 5.8.0 es la ultima version cuyo descriptor funciona con Maven 3.
+                     Las posteriores exigen Maven 4 y sus parametros quedan sin aplicar. -->
+                <version>5.8.0</version>
+                <executions>
+                    <execution>
+                        <id>reporte-html</id>
+                        <phase>test</phase>
+                        <goals><goal>generate</goal></goals>
+                        <configuration>
+                            <projectName>Library API - Suite de automatización</projectName>
+                            <inputDirectory>${run.directory}</inputDirectory>
+                            <jsonFiles><param>cucumber.json</param></jsonFiles>
+                            <outputDirectory>${run.directory}/reporte</outputDirectory>
+                            <buildNumber>${maven.build.timestamp}</buildNumber>
+                            <classifications>
+                                <Ambiente>${env}</Ambiente>
+                                <Servicio>https://rahulshettyacademy.com/Library</Servicio>
+                                <Cliente>REST Assured ${restassured.version}</Cliente>
+                            </classifications>
+                            <checkBuildResult>false</checkBuildResult>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
